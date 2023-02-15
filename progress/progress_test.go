@@ -34,6 +34,31 @@ func TestProgress_AppendTrackers(t *testing.T) {
 	assert.Equal(t, 2, len(p.trackersInQueue))
 }
 
+func TestProgress_IsRenderFinished(t *testing.T) {
+	p := Progress{
+		finished: make(chan struct{}),
+	}
+	ch := p.IsRenderFinished()
+	select {
+	case <-ch:
+		assert.Fail(t, "should not be finished")
+	default:
+	}
+
+	close(p.finished)
+	select {
+	case <-ch:
+	default:
+		assert.Fail(t, "should be finished")
+	}
+
+	select {
+	case <-p.IsRenderFinished():
+	default:
+		assert.Fail(t, "should be finished")
+	}
+}
+
 func TestProgress_IsRenderInProgress(t *testing.T) {
 	p := Progress{}
 	assert.False(t, p.IsRenderInProgress())
@@ -222,13 +247,17 @@ func TestProgress_ShowValue(t *testing.T) {
 }
 
 func TestProgress_Stop(t *testing.T) {
-	doneChannel := make(chan bool, 1)
+	p := Progress{
+		done:             make(chan struct{}),
+		renderInProgress: true,
+	}
 
-	p := Progress{}
-	p.done = doneChannel
-	p.renderInProgress = true
 	p.Stop()
-	assert.True(t, <-doneChannel)
+	select {
+	case <-p.done:
+	default:
+		assert.Fail(t, "Progress should be stopped")
+	}
 }
 
 func TestProgress_Style(t *testing.T) {

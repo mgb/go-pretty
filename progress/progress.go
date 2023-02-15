@@ -23,7 +23,9 @@ var (
 // Progress helps track progress for one or more tasks.
 type Progress struct {
 	autoStop              bool
-	done                  chan bool
+	done                  chan struct{}
+	doneOnce              sync.Once
+	finished              chan struct{}
 	lengthProgress        int
 	lengthProgressOverall int
 	lengthTracker         int
@@ -93,6 +95,13 @@ func (p *Progress) AppendTrackers(trackers []*Tracker) {
 	for _, tracker := range trackers {
 		p.AppendTracker(tracker)
 	}
+}
+
+// IsRenderFinished returns a channel that will be closed once the Render()
+// function has finished. This is useful for clients that want to wait for the
+// Render() function to finish before continuing.
+func (p *Progress) IsRenderFinished() <-chan struct{} {
+	return p.finished
 }
 
 // IsRenderInProgress returns true if a call to Render() was made, and is still
@@ -263,9 +272,9 @@ func (p *Progress) ShowValue(show bool) {
 
 // Stop stops the Render() logic that is in progress.
 func (p *Progress) Stop() {
-	if p.IsRenderInProgress() {
-		p.done <- true
-	}
+	p.doneOnce.Do(func() {
+		close(p.done)
+	})
 }
 
 // Style returns the current Style.
@@ -285,7 +294,9 @@ func (p *Progress) initForRender() {
 	}
 
 	// reset the signals
-	p.done = make(chan bool, 1)
+	p.done = make(chan struct{})
+	p.doneOnce = sync.Once{}
+	p.finished = make(chan struct{})
 
 	// pick default lengths if no valid ones set
 	if p.lengthTracker <= 0 {

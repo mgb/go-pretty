@@ -60,6 +60,7 @@ func (p *Progress) endRender() {
 	defer p.renderInProgressMutex.Unlock()
 
 	p.renderInProgress = false
+	close(p.finished)
 }
 
 func (p *Progress) extractDoneAndActiveTrackers() ([]*Tracker, []*Tracker) {
@@ -300,7 +301,7 @@ func (p *Progress) renderTrackers(lastRenderLength int) int {
 
 	// stop if auto stop is enabled and there are no more active trackers
 	if p.autoStop && p.LengthActive() == 0 {
-		p.done <- true
+		p.Stop()
 	}
 
 	return out.Len()

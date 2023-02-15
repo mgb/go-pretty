@@ -10,6 +10,7 @@ import (
 type Writer interface {
 	AppendTracker(tracker *Tracker)
 	AppendTrackers(trackers []*Tracker)
+	IsRenderFinished() <-chan struct{}
 	IsRenderInProgress() bool
 	Length() int
 	LengthActive() int
