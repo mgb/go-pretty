@@ -1,6 +1,6 @@
 # text
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/jedib0t/go-pretty/v6.svg)](https://pkg.go.dev/github.com/jedib0t/go-pretty/v6/text)
+[![Go Reference](https://pkg.go.dev/badge/github.com/mgb/go-pretty.svg)](https://pkg.go.dev/github.com/mgb/go-pretty/text)
 
 Package with utility functions to manipulate strings/text.
 

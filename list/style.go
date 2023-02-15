@@ -1,6 +1,6 @@
 package list
 
-import "github.com/jedib0t/go-pretty/v6/text"
+import "github.com/mgb/go-pretty/text"
 
 // Style declares how to render the List (items).
 type Style struct {

@@ -5,7 +5,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/jedib0t/go-pretty/v6/list"
+	"github.com/mgb/go-pretty/list"
 	"github.com/pkg/profile"
 )
 

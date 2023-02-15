@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/jedib0t/go-pretty/v6/list"
-	"github.com/jedib0t/go-pretty/v6/progress"
-	"github.com/jedib0t/go-pretty/v6/table"
+	"github.com/mgb/go-pretty/list"
+	"github.com/mgb/go-pretty/progress"
+	"github.com/mgb/go-pretty/table"
 )
 
 var (
